@@ -1,4 +1,5 @@
 import { useMemo, useState } from 'react'
+import LoadingState from './LoadingState.jsx'
 
 const locations = [
   'Andaman and Nicobar Islands',
@@ -51,7 +52,15 @@ const categories = [
   ['🙋', 'General / Other'],
 ]
 
-function Wizard() {
+const incomeOptions = [
+  ['Below ₹10,000', 'w-1/5'],
+  ['₹10,000 – ₹25,000', 'w-2/5'],
+  ['₹25,000 – ₹50,000', 'w-3/5'],
+  ['₹50,000 – ₹1,00,000', 'w-4/5'],
+  ['Above ₹1,00,000', 'w-full'],
+]
+
+function Wizard({ onComplete = () => {} }) {
   const [currentStep, setCurrentStep] = useState(1)
   const [answers, setAnswers] = useState({
     state: '',
@@ -62,6 +71,7 @@ function Wizard() {
   })
   const [dropdownOpen, setDropdownOpen] = useState(false)
   const [search, setSearch] = useState('')
+  const [isLoading, setIsLoading] = useState(false)
 
   const filteredLocations = useMemo(
     () => locations.filter((location) => location.toLowerCase().includes(search.toLowerCase())),
@@ -81,6 +91,16 @@ function Wizard() {
   const selectCategory = (category) => {
     updateAnswer('category', category)
     setCurrentStep(3)
+  }
+
+  const selectIncome = (income) => {
+    updateAnswer('income', income)
+    setCurrentStep(5)
+  }
+
+  const selectGender = (gender) => {
+    updateAnswer('gender', gender)
+    setIsLoading(true)
   }
 
   const age = Number(answers.age)
@@ -264,23 +284,79 @@ function Wizard() {
               </button>
             </div>
 
-            <div className="w-full shrink-0 p-6 text-center sm:p-10">
-              <span className="text-5xl" aria-hidden="true">✨</span>
-              <h2 className="mt-5 font-['Playfair_Display'] text-3xl font-semibold text-text-primary">More details coming next</h2>
-              <p className="mt-3 text-text-secondary">Step 4 will collect the remaining information for your matches.</p>
-              <button type="button" onClick={() => setCurrentStep(3)} className="mt-8 text-sm font-medium text-text-secondary transition hover:text-text-primary focus:outline-none focus-visible:ring-2 focus-visible:ring-accent-blue active:scale-95">
+            <div className="w-full shrink-0 p-6 sm:p-10">
+              <button type="button" onClick={() => setCurrentStep(3)} className="text-sm font-medium text-text-secondary transition hover:text-text-primary focus:outline-none focus-visible:ring-2 focus-visible:ring-accent-blue active:scale-95">
                 <span aria-hidden="true">← </span>Back
               </button>
+              <div className="mt-5 text-center">
+                <span className="text-5xl" aria-hidden="true">💰</span>
+                <h2 className="mt-5 font-['Playfair_Display'] text-3xl font-semibold text-text-primary sm:text-4xl">What is your monthly household income?</h2>
+                <p className="mt-3 text-text-secondary">Choose the range that most closely matches your household.</p>
+              </div>
+
+              <div className="mt-8 space-y-3">
+                {incomeOptions.map(([income, width]) => {
+                  const selected = answers.income === income
+                  return (
+                    <button
+                      key={income}
+                      type="button"
+                      onClick={() => selectIncome(income)}
+                      className={`relative flex w-full items-center overflow-hidden rounded-xl border px-5 py-4 text-left transition duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-accent-blue active:scale-95 ${selected ? 'border-accent-blue bg-accent-blue text-white shadow-[0_0_24px_rgba(59,130,246,0.3)]' : 'border-white/10 bg-white/[0.04] text-slate-200 hover:scale-[1.01] hover:border-accent-blue/80 hover:shadow-[0_0_20px_rgba(59,130,246,0.16)]'}`}
+                      aria-pressed={selected}
+                    >
+                      <span className="relative z-10 pr-16 font-medium">{income}</span>
+                      <span className="pointer-events-none absolute inset-y-0 right-0 flex w-28 items-center pr-4" aria-hidden="true">
+                        <span className={`ml-auto h-1.5 rounded-full ${width} ${selected ? 'bg-white/70' : 'bg-accent-blue/60'}`} />
+                      </span>
+                      {selected && <span className="absolute right-4 top-3 text-sm" aria-label="Selected">✓</span>}
+                    </button>
+                  )
+                })}
+              </div>
             </div>
 
-            <div className="w-full shrink-0 p-6 text-center sm:p-10">
-              <span className="text-5xl" aria-hidden="true">🏁</span>
-              <h2 className="mt-5 font-['Playfair_Display'] text-3xl font-semibold text-text-primary">Almost there</h2>
-              <p className="mt-3 text-text-secondary">Step 5 will show your personalized scheme results.</p>
+            <div className="w-full shrink-0 p-6 sm:p-10">
+              <button type="button" onClick={() => setCurrentStep(4)} className="text-sm font-medium text-text-secondary transition hover:text-text-primary focus:outline-none focus-visible:ring-2 focus-visible:ring-accent-blue active:scale-95">
+                <span aria-hidden="true">← </span>Back
+              </button>
+              <div className="mt-5 text-center">
+                <span className="text-5xl" aria-hidden="true">🧑</span>
+                <h2 className="mt-5 font-['Playfair_Display'] text-3xl font-semibold text-text-primary sm:text-4xl">One last thing — your gender</h2>
+                <p className="mt-3 text-text-secondary">This helps us match gender-specific schemes when available.</p>
+              </div>
+
+              <div className="mt-8 grid grid-cols-1 gap-3 sm:grid-cols-3">
+                {['Male', 'Female', 'Other / Prefer not to say'].map((gender) => {
+                  const selected = answers.gender === gender
+                  return (
+                    <button
+                      key={gender}
+                      type="button"
+                      onClick={() => selectGender(gender)}
+                      className={`relative min-h-28 rounded-xl border p-4 text-center font-medium transition duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-accent-blue active:scale-95 ${selected ? 'border-accent-blue bg-accent-blue text-white shadow-[0_0_24px_rgba(59,130,246,0.3)]' : 'border-white/10 bg-white/[0.04] text-slate-200 hover:scale-[1.02] hover:border-accent-blue/80 hover:shadow-[0_0_20px_rgba(59,130,246,0.16)]'}`}
+                      aria-pressed={selected}
+                    >
+                      {gender}
+                      {selected && <span className="absolute right-3 top-3 text-sm" aria-label="Selected">✓</span>}
+                    </button>
+                  )
+                })}
+              </div>
             </div>
           </div>
         </div>
       </div>
+      {isLoading && (
+        <LoadingState
+          selectedState={answers.state}
+          results={{ ...answers }}
+          onComplete={(results) => {
+            setIsLoading(false)
+            onComplete(results)
+          }}
+        />
+      )}
     </section>
   )
 }
