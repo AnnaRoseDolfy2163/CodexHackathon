@@ -1,12 +1,6 @@
 function Hero() {
   const scrollToWizard = () => {
-    const wizard =
-      document.getElementById('wizard') ||
-      Array.from(document.querySelectorAll('div')).find(
-        (element) => element.textContent?.trim() === 'Wizard placeholder',
-      )
-
-    wizard?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+    document.getElementById('wizard')?.scrollIntoView({ behavior: 'smooth', block: 'start' })
   }
 
   return (
@@ -82,7 +76,7 @@ function Hero() {
         <button
           type="button"
           onClick={scrollToWizard}
-          className="mt-10 rounded-full bg-gradient-to-r from-accent-blue to-accent-purple px-8 py-4 text-lg font-semibold text-white shadow-[0_12px_30px_rgba(59,130,246,0.28)] transition duration-200 hover:-translate-y-1 hover:shadow-[0_16px_38px_rgba(139,92,246,0.4)] focus:outline-none focus-visible:ring-2 focus-visible:ring-accent-blue focus-visible:ring-offset-2 focus-visible:ring-offset-navy active:scale-[0.97]"
+          className="scheme-seva-float mt-10 rounded-full bg-gradient-to-r from-accent-blue to-accent-purple px-8 py-4 text-lg font-semibold text-white shadow-[0_12px_30px_rgba(59,130,246,0.28)] transition duration-200 hover:-translate-y-1 hover:shadow-[0_16px_38px_rgba(139,92,246,0.4)] focus:outline-none focus-visible:ring-2 focus-visible:ring-accent-blue focus-visible:ring-offset-2 focus-visible:ring-offset-navy active:scale-[0.97]"
           aria-label="Find government schemes that match your eligibility"
         >
           Find My Schemes <span aria-hidden="true">→</span>

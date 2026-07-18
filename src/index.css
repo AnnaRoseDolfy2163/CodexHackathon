@@ -41,3 +41,47 @@ body {
 ::-webkit-scrollbar-thumb:hover {
   background: #3b82f6;
 }
+
+@keyframes schemeSevaFadeUp {
+  from { opacity: 0; transform: translateY(16px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes schemeSevaToast {
+  from { opacity: 0; transform: translateX(20px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+
+@keyframes schemeSevaFloat {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-5px); }
+}
+
+@keyframes schemeSevaPulse {
+  50% { box-shadow: 0 0 30px rgba(59, 130, 246, 0.42); }
+}
+
+.scheme-seva-fade-up {
+  animation: schemeSevaFadeUp 0.45s ease-out both;
+}
+
+.scheme-seva-toast {
+  animation: schemeSevaToast 0.25s ease-out both;
+}
+
+.scheme-seva-float {
+  animation: schemeSevaFloat 3s ease-in-out infinite;
+}
+
+.scheme-seva-selection-pulse {
+  animation: schemeSevaPulse 0.55s ease-out;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .scheme-seva-fade-up,
+  .scheme-seva-toast,
+  .scheme-seva-float,
+  .scheme-seva-selection-pulse {
+    animation: none;
+  }
+}

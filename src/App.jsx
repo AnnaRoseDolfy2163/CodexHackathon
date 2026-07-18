@@ -13,6 +13,9 @@ function App() {
   const [lastAnswers, setLastAnswers] = useState(null)
   const [schemes, setSchemes] = useState([])
   const [error, setError] = useState('')
+  const [isFetching, setIsFetching] = useState(false)
+  const [hasSearched, setHasSearched] = useState(false)
+  const [wizardKey, setWizardKey] = useState(0)
 
   useEffect(() => {
     if (!keyModalOpen) return undefined
@@ -29,17 +32,38 @@ function App() {
     setLastAnswers(answers)
     setError('')
     setSchemes([])
+    setHasSearched(true)
+    setIsFetching(true)
 
     try {
       const matches = await callOpenAI(answers, key)
-      setSchemes(matches)
+      setSchemes(Array.isArray(matches) ? matches : [])
     } catch (requestError) {
       setError(
         requestError.code === 'PARSE_FAILED'
           ? 'Something went wrong. Please try again.'
           : 'Connection failed. Check your internet connection and try again.',
       )
+    } finally {
+      setIsFetching(false)
     }
+  }
+
+  useEffect(() => {
+    if (!hasSearched || isFetching) return
+    document.getElementById('results')?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+  }, [hasSearched, isFetching, schemes, error])
+
+  const resetWizard = () => {
+    setSchemes([])
+    setError('')
+    setLastAnswers(null)
+    setPendingAnswers(null)
+    setHasSearched(false)
+    setWizardKey((current) => current + 1)
+    window.setTimeout(() => {
+      document.getElementById('wizard')?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+    }, 0)
   }
 
   const handleWizardComplete = (answers) => {
@@ -71,8 +95,15 @@ function App() {
     <>
       <Navbar />
       <Hero />
-      <Wizard onComplete={handleWizardComplete} />
-      <Results schemes={schemes} error={error} onTryAgain={() => lastAnswers && requestSchemes(lastAnswers)} />
+      <Wizard key={wizardKey} onComplete={handleWizardComplete} />
+      <Results
+        schemes={schemes}
+        onReset={resetWizard}
+        error={error}
+        onTryAgain={() => lastAnswers && requestSchemes(lastAnswers)}
+        isLoading={isFetching}
+        hasSearched={hasSearched}
+      />
 
       <button
         type="button"

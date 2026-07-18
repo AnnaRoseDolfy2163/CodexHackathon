@@ -129,7 +129,7 @@ function Wizard({ onComplete = () => {} }) {
         </div>
         <div className="mb-10 h-2 overflow-hidden rounded-full bg-white/[0.08]" aria-hidden="true">
           <div
-            className="h-full rounded-full bg-gradient-to-r from-accent-blue to-accent-purple transition-[width] duration-500 ease-out"
+            className="h-full rounded-full bg-gradient-to-r from-accent-blue to-accent-purple transition-[width] duration-500 ease-[cubic-bezier(.34,1.56,.64,1)]"
             style={{ width: `${(currentStep / 5) * 100}%` }}
           />
         </div>
@@ -228,7 +228,7 @@ function Wizard({ onComplete = () => {} }) {
                       key={category}
                       type="button"
                       onClick={() => selectCategory(category)}
-                      className={`relative flex min-h-24 items-center gap-3 rounded-xl border p-4 text-left transition duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-accent-blue active:scale-95 ${selected ? 'border-accent-blue bg-accent-blue text-white shadow-[0_0_24px_rgba(59,130,246,0.3)]' : 'border-white/10 bg-white/[0.04] text-slate-200 hover:scale-[1.02] hover:border-accent-blue/80 hover:shadow-[0_0_20px_rgba(59,130,246,0.16)]'}`}
+                      className={`relative flex min-h-24 items-center gap-3 rounded-xl border p-4 text-left transition duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-accent-blue active:scale-95 ${selected ? 'scheme-seva-selection-pulse border-accent-blue bg-accent-blue text-white shadow-[0_0_24px_rgba(59,130,246,0.3)]' : 'border-white/10 bg-white/[0.04] text-slate-200 hover:scale-[1.02] hover:border-accent-blue/80 hover:shadow-[0_0_20px_rgba(59,130,246,0.16)]'}`}
                       aria-pressed={selected}
                     >
                       <span className="text-2xl" aria-hidden="true">{icon}</span>

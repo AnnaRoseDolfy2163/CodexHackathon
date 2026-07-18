@@ -18,7 +18,7 @@ function Navbar() {
           </span>
         </a>
 
-        <p className="text-xs font-medium tracking-wide text-text-secondary sm:text-sm">
+        <p className="hidden text-xs font-medium tracking-wide text-text-secondary min-[380px]:block sm:text-sm">
           Welfare, Simplified
         </p>
       </nav>
